@@ -2,7 +2,7 @@
  * Matrícula: 650525
  * Professor: Wladmir Brandao
  * Disciplina: LPA G01 - PUC-MG - CC
- * Problema: TP1 - Matematica
+ * Problema: AS01 - Matematica
  * Complexidade problema fatorial de dois numeros: O(n + m) -> Desconsiderando a leitura de entradas
  */
 
