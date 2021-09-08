@@ -10,7 +10,7 @@
  * query e subsequencia de uma sequencia. 
  * O problema e linear, resolvido com 1 while que pode repetir
  * tamanho da sequencia vezes ou tamanho da query vezes.
- * No pior caso O(n) | n + 2 comparacoes | 2*n subtracoes + 2| 
+ * No pior caso O(n) n = tamanho string sequencia | n + 2 comparacoes | 2*n subtracoes + 2| 
  */
 
 #include <iostream>
@@ -32,14 +32,19 @@ bool isSubsequencia(string sequencia, string query) {
 
     // Repeticao que percorre toda string de sequencia ou percorre
     // a sequencia ate encontrar todo o padrao da query
+    // As duas strings seriam como uma pilha, a cada iteracao se remove o 
+    // caracter analisado da sequencia e se o caracter da query for encontrado
+    // na sequencia, entao ele e removido tambem. Se no final da iteracao
+    // se a pilha da query estiver vazia, entao todos elementos da sequencia
+    // foram encontrados
     // Repeticao no pior caso O(n) | 2n + 1 comparacoes | 2*n subtracoes
     // N = deslocamentoQuery ou deslocamentoSequencia
 	while(deslocamentoQuery >= 0 && deslocamentoSequencia >= 0){
-        // So ira deslocar na query quando encontrar o proximo caracter da
+        // So ira remover elemnto da query quando encontrar caracter da
         // subsequencia query na sequencia 
 		if (query[deslocamentoQuery] == sequencia[deslocamentoSequencia])
-			deslocamentoQuery--; // deslocando na query
-        deslocamentoSequencia--; // deslocando na sequencia
+			deslocamentoQuery--; // removendo elemento query
+        deslocamentoSequencia--; // removendo elemento sequencia
     }
 
     // Se deslocamento query = -1 entao todos os caracteres
