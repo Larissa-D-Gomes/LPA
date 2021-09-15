@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include <climits>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -22,7 +23,7 @@ class Grafo{
         // Construtor
         // @param int p_numVertices
         Grafo(int p_numVertices){
-            this->numVertices = p_numVertices;
+            this->numVertices = p_numVertices; 
             alocarMatriz();
         }
 
@@ -30,8 +31,10 @@ class Grafo{
          * @param int vert1, int vert2, int val
          */
         void adicionarAresta(int vert1, int vert2, int val){
-            this->matrizAdj[vert1][vert2] = val;
-            this->matrizAdj[vert2][vert1] = val;
+            if(this->matrizAdj[vert1][vert2] == 30010 || this->matrizAdj[vert1][vert2] > val){
+                this->matrizAdj[vert1][vert2] = val;
+                this->matrizAdj[vert2][vert1] = val;
+            }
         }
 
         void printGrafo(){
@@ -52,17 +55,17 @@ class Grafo{
         }
 
         
-        void calcularMenoresCaminhos(){
+        int calcularMenoresCaminhos(){
 
             // Copiar matriz de adjacencia
             int matrizAux[this->numVertices][this->numVertices];
-            bool vistados[this->numVertices];
-            int count = 0;
+            int vistados[this->numVertices];
+            int count = 1;
 
             int tempoTotal = 0;
 
             for(int i = 0; i < this->numVertices; i++){
-                vistados[i] = false;
+                vistados[i] = -1;
                 for(int j = 0; j < this->numVertices; j++){
                     if(i == j)
                         matrizAux[i][j] = 0;
@@ -75,35 +78,63 @@ class Grafo{
             for(int i = 0; i < this->numVertices; i++)
                 for(int j = 0; j < this->numVertices; j++)
                     for(int k = 0; k < this->numVertices; k++)
-                        if( matrizAux[j][i] + matrizAux[i][k] < matrizAux[j][k])
+                        if( (matrizAux[j][i] + matrizAux[i][k]) < matrizAux[j][k])
                             matrizAux[j][k] = matrizAux[j][i] + matrizAux[i][k];
             
             int atual = 0;
             int prox = 0;
-            vistados[0] = true;
+            vistados[0] = 0;
             bool visitou;
             while(count < this->numVertices){
                 int menorCaminho = INT_MAX;
                 visitou = false;
                 for(int j = 0; j < this->numVertices; j++){
-                    if( !vistados[j] && menorCaminho > matrizAux[atual][j] && matrizAux[atual][j] < 30010){
+                    if( vistados[j] == -1 && menorCaminho > matrizAux[atual][j] && matrizAux[atual][j] < 30010){
                         prox = j;
-                        
                         menorCaminho = matrizAux[atual][j];
                         visitou = true;
                     }
                 }
-                vistados[atual] = true;
-                if(!visitou)
-                    cout << "n" << endl;
+                
+                if(!visitou){
+                    if(this->teletransporte == 0 )
+                        return -1;
+                        
+                    for(int i = 0; i < this->numVertices; i++){
+                        if(vistados[i] == -1){
+                            prox = i;
+                            this->teletransporte--;
+                            i = this->numVertices;
+                            vistados[prox] = 0;
+                        }
+                    }
+                }else{
+                    
+                    vistados[prox] = menorCaminho;
+                }
+                cout << prox << " " << vistados[prox] << endl;
                 count++;
                 atual = prox;
-                tempoTotal += menorCaminho;
+                
             }
-            cout << tempoTotal << " AQUI" << endl;
+
+            sort(vistados, vistados +  this->numVertices);
+
+            int remover = this->numVertices - 1;
+            while(this->teletransporte > 0){
+                vistados[remover] = 0;
+                remover--;
+                this->teletransporte--;
+            }
+
+            for(int i = 0; i < this->numVertices; i++){
+                tempoTotal += vistados[i];
+            }
+
+           // return tempoTotal;
                         
-        }
-            /*cout << "   ";
+        //}
+            cout << "   ";
             for(int i = 0; i < this->numVertices; i++)
                 cout << i << "  ";
 
@@ -116,8 +147,10 @@ class Grafo{
                     cout << matrizAux[i][j] << " ";
                 }
                 cout << endl;
-            }*
-        }/
+            }
+
+             return tempoTotal;
+        }
 
     private:
         /* Metodo para alocar matriz de adjacencia
@@ -154,7 +187,8 @@ int main(){
     for(int i = 1; i <= casosDeTeste; i++){
         cin >> vertice;
         cin >> aresta;
-
+        cout << vertice << "VER " << i << endl;
+        cout << aresta << "VER"<< endl;
         // Alocando grafo com
         Grafo* g = new Grafo(vertice);
         cin >>  g->teletransporte;
@@ -166,7 +200,8 @@ int main(){
 
             g->adicionarAresta(--vertice1, --vertice2, valor);
         }
-        g->calcularMenoresCaminhos();
+       // g->printGrafo();
+        cout << g->calcularMenoresCaminhos() << endl;
     }
     
 
