@@ -12,7 +12,7 @@
  * calculadas, se baseia no problema do caixeiro vaijante, com programacao
  * dinamica sendo assim, a complexidade para resolver o problema de forma
  * recursiva eh O(2^n * n^2). Como o algoritmo impede que estados ja calculados
- * com a programcao dinamica, o problema resolvido deixa de ser O(n!).
+ * com a programcao dinamica, o problema resolvido deixa de ser O(8^n).
  */ 
 
 
@@ -30,7 +30,7 @@ int macas[21][21][2001];
 int resultadosCalculados[21][21][2001];
 
 // Variaveis globais para controle de posicao nas matrizes globais
-int linhas, colunas, numMacas;
+int linhas, colunas, numMacas, tempoMax;
 
 
 /* Funcao para calcular o maximo de macas que e possivel capturar
@@ -44,8 +44,8 @@ int linhas, colunas, numMacas;
  */
 int calculaMaxMacas(int linha, int coluna, int tempo){
 
-    // Calcular apenas para resultadosCalcmacasuladosicoes validas
-     if(linha > 0 && linha <= linhas && coluna > 0 && coluna <= colunas){
+    // Calcular apenas para resultadosCalcmacasuladosicoes validas e tempo valido
+     if(linha > 0 && linha <= linhas && coluna > 0 && coluna <= colunas && tempoMax <= tempoMax){
         // Estado ainda nao calculado
         // Verificacao para evitar calcular o que ja foi calculado
         if(resultadosCalculados[linha][coluna][tempo] == -1){
@@ -111,8 +111,7 @@ int main(){
         cin >> colunas;
         cin >> numMacas;
 
-        // Matriz tridimensional para armazenar 
-        // E tempo que cada maca caiu
+        tempoMax = -1;
 
         // Inicializando matriz de macas caidas com 0 macas
         // E matriz de resultado calculados, sem resultados calculados
@@ -132,6 +131,10 @@ int main(){
             cin >> linha;
             cin >> coluna;
             cin >> tempo;
+
+            // Selecionando o maior tempo para controle de recursao
+            if(tempo > tempoMax)
+                tempoMax = tempo;
             
             macas[linha][coluna][tempo] = 1;
         }
